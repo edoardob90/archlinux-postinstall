@@ -1,0 +1,9 @@
+---
+- name: plymouth-set-default-theme
+  command: plymouth-set-default-theme -R empa
+
+- name: update-grub
+  command: update-grub
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

@@ -1,0 +1,108 @@
+#!/usr/bin/bash
+
+# When this file has the execution flag, is owned by root and has a shebang
+# it gets executed instead of just read.
+
+# This can be enforced with "program:" option:
+#        like program:/etc/auto.data 
+
+# This script outputs something like this, but with values from the user
+# environment:
+
+#data -fstype=cifs,dir_mode=0700,file_mode=0700,uid=1804011905,gid=100,user=pbu,cruid=pbu,sec=krb5 \
+#/Abt601        ://empa.emp-eaw.ch/data/Abt601          \
+#/Projects      ://empa.emp-eaw.ch/data/Projects        \
+#/Unsaved       ://empa.emp-eaw.ch/data/Unsaved         \
+#/users/pbu     ://empa.emp-eaw.ch/data/users/pbu
+
+# Note - executable maps are working slightly different. The key "data" as shown
+# above is not usable in this way in the map file and the browse option is not available.
+
+# This is a problem. If someone does:
+#    ls -l /dfs/empa.emp-eaw.ch
+
+# an empty directory is shown. But we would like to see 'data' there.
+
+# The key is passed as the single argument and is in $1. The $key argument is anything what
+# the user is looking for, when he does:
+#    ls -l /dfs/empa.emp-eaw.ch/blub
+
+# the key will be 'blub'.
+
+# Allthoug the browse is not available, we need an executable map to get the user environment.
+
+# Therefore could make this:
+# cd /home/$user
+# ln -s DFS /dfs/empa.emp-eaw.ch/data
+
+# If the user does cd ~/DFS, then the key 'data' is sent to autofs.
+# At the end we have /dfs/empa.emp-eaw.ch/data
+
+# Another way to go around this is implemented:
+#    /dfs/empa.emp-eaw.ch/data -> /dfs/.empa.emp-eaw.ch/data
+# Left part used by user, right part used by automounter
+
+env > /tmp/env_auto.data
+
+echoerr() { echo "$@" 1>&2; }
+
+notify-send-all() {
+    if [ -x /usr/local/bin/notify-send-all ]; then
+        /usr/local/bin/notify-send-all "$1" "$2" --icon=dialog-information
+    fi
+}
+
+# Do not allow root to mount user shares
+# This is not a security feature, but simply catches errors
+if [ "$AUTOFS_USER" == "root" ];then
+#    notify-send-all "Mouning DFS as root" \
+#                    "A process tried to mount //empa.emp-eaw.ch/$1 as root. This is not supported."
+    echoerr "Will not attempt to mount auto.data as root, exiting"
+    exit 1
+fi
+
+# Only users with uid 100 are AD users
+# This is not a security feature, but simply catches errors
+if [ "$AUTOFS_GID" != "100" ];then
+    notify-send-all "Mouning DFS as user $AUTOFS_USER" \
+                    "A process tried to mount //empa.emp-eaw.ch/$1 as user $AUTOFS_USER. This is not a Empa user."
+    echoerr "Will not attempt to mount auto.data as user not having gid 100, exiting"
+    exit 1
+fi
+
+# Exit and complain if not in Empa network
+# FIXME: needs better method to check if in empa domain
+timeout 0.3 ping -w 1 -c 1 152.88.114.11 > /dev/null 2>&1
+if [ "$?" != "0" ];then
+    notify-send-all "Mouning DFS" \
+                    "Empa network not reachable while mountint DFS shares."
+    echoerr "Cannot mount DFS, not in Empa network"
+    exit 1
+fi
+
+
+# Get the Abteilung from the user groups (assume it has one at the moment)
+ABTEILUNGEN=$(id ${AUTOFS_USER} 2> /dev/null | egrep -o "\(ggabt[0-9]*\)" | sed 's/[\(|\)]//g' | sed 's/gg//')
+
+
+#
+#
+# Edit below
+#
+#
+# Generate the final map used by autofs
+echo "-fstype=cifs,vers=3.0,dir_mode=0700,file_mode=0700,uid=${AUTOFS_UID},gid=${AUTOFS_GID},user=${AUTOFS_USER},cruid=${AUTOFS_USER},sec=krb5,soft \\"
+
+if [ -n "$ABTEILUNGEN" ];then
+	for ABTEILUNG in $ABTEILUNGEN;do
+		# First char uppercase
+		ABTEILUNG=${ABTEILUNG^}
+		echo "\"/${ABTEILUNG}\"          \"://empa.emp-eaw.ch/data/${ABTEILUNG}\"           \\"
+	done
+fi
+echo "        \"/Daten\"                 \"://empa.emp-eaw.ch/data/Daten\"                  \\"
+echo "        \"/Progs\"                 \"://empa.emp-eaw.ch/data/Progs\"                  \\"
+echo "        \"/Projects\"              \"://empa.emp-eaw.ch/data/Projects\"               \\"
+echo "        \"/Unsaved\"               \"://empa.emp-eaw.ch/data/Unsaved\"                \\"
+echo "        \"/users/${AUTOFS_USER}\"  \"://empa.emp-eaw.ch/data/users/${AUTOFS_USER}\"     "
+

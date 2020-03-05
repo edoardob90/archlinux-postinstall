@@ -1,0 +1,45 @@
+---
+- name: "Installing docker dependencies"
+  apt:
+    name: [ apt-transport-https, ca-certificates, curl, gnupg2, software-properties-common ]
+    update_cache: yes
+
+- name: "Add docker apt signing key"
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: "Add docker repository"
+  apt_repository:
+    repo: deb [arch=amd64] http://download.docker.com/linux/debian buster stable
+    state: present
+    filename: docker
+
+#FIXME: Docker installation fails at first step but then works on second step
+- name: "Installing docker packages"
+  apt:
+    name: [ docker-ce, docker-ce-cli, docker-compose ]
+    update_cache: yes
+  register: docker_install_result
+  failed_when: no
+  changed_when:
+    - "docker_install_result.stderr is defined"
+
+- name: "Log of docker installation"
+  debug:
+    msg: "{{ docker_install_result  }}"
+
+#- name: "Log of docker installation"
+#  debug:
+#    msg: "{{ docker_install_result.changed  }}"
+
+- name: "Check docker installation"
+  apt:
+    name: docker-ce
+    state: fixed
+  when: "docker_install_result is defined and docker_install_result.changed == true"
+
+
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

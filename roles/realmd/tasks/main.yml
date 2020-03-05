@@ -1,0 +1,8 @@
+---
+- import_tasks: packages.yml
+- import_tasks: join.yml
+- import_tasks: postconfigure.yml
+
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

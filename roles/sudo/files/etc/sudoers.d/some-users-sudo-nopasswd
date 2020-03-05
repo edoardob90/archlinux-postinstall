@@ -1,0 +1,2 @@
+# FIXME: remove for prod
+#pbu ALL = (ALL) NOPASSWD: ALL

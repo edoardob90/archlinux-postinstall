@@ -1,0 +1,25 @@
+---
+- name: "Installing vim"
+  apt:
+    name: [ vim ]
+    update_cache: yes
+
+- name: "Installing vim config file"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root 
+    group: root 
+    mode: 0644
+  with_items:
+    - etc/vim/vimrc.local
+
+- name: "Activate vim config file"
+  replace:
+    path: /etc/vim/vimrc
+    regexp: '" let g:skip_defaults_vim = 1'
+    replace: 'let g:skip_defaults_vim = 1'
+
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

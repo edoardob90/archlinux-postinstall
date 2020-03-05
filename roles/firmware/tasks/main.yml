@@ -1,0 +1,9 @@
+---
+- name: "Installing firmware packages"
+  apt:
+    name: [firmware-iwlwifi, firmware-misc-nonfree]
+    update_cache: yes
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

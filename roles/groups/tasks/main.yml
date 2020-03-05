@@ -1,0 +1,23 @@
+---
+
+- name: "Installing security groups configuration"
+  copy:
+    src: etc/security/group.conf
+    dest: /etc/security/group.conf
+    owner: root 
+    group: root 
+    mode: 0644
+
+- name: "Installing pam groups configuration"
+  copy:
+    src: usr/share/pam-configs/groups
+    dest: /usr/share/pam-configs/groups
+    owner: root 
+    group: root 
+    mode: 0644
+  notify:
+  - pam auth update groups
+
+- meta: flush_handlers
+
+# vim: tabstop=2 shiftwidth=2 expandtab

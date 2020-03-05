@@ -1,0 +1,12 @@
+---
+- name: restart sssd
+  service:
+    name: sssd
+    state: restarted
+
+- name: pam auth update mkhomedir
+  command: pam-auth-update --enable mkhomedir
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

@@ -1,0 +1,6 @@
+---
+- name: update-ca-certificates
+  command: update-ca-certificates
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

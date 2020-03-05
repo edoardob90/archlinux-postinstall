@@ -1,0 +1,7 @@
+---
+- name: pam auth update groups
+  command: pam-auth-update --enable groups
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

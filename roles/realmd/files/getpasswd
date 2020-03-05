@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+# FIXME: Chicken and egg problem here
+# https://unix.stackexchange.com/questions/314621/join-redhat-7-without-prompting-the-password
+# Made at least sure that:
+# - password.encrpyted and key.pem is not checked-in and lives in a secure place on the install host
+# - password.encrypted and key.pem is only available from the install net 192.168.15.20
+# - password.encrypted and key.pem gets deleted after installation - and it is enforced
+curl -s -u install:TBGRWDSA1235431 http://192.168.15.20/protected/password.encrypted > /tmp/password.encrypted
+curl -s -u install:TBGRWDSA1235431 http://192.168.15.20/protected/key.pem > /tmp/key.pem
+# encrypted password gets decrypted on the fly
+PASSWORD=$(openssl rsautl -decrypt -inkey /tmp/key.pem -in /tmp/password.encrypted)
+rm -f /tmp/password.encrypted
+rm -f /tmp/key.pem
+
+if [ -f /tmp/key.pem ];then
+	echo "fatal, cannot delete key, will not continue"
+	exit 1
+fi
+
+echo $PASSWORD

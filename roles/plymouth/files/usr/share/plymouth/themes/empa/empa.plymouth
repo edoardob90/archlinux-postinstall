@@ -1,0 +1,9 @@
+[Plymouth Theme]
+Name=Empa theme based on Spinfinity
+Description=Simple theme that shows a rotating infinity sign in the center of the screen
+ModuleName=throbgress
+
+[throbgress]
+ImageDir=/usr/share/plymouth/themes/empa
+BackgroundStartColor=0x04131e
+BackgroundEndColor=0x04131e

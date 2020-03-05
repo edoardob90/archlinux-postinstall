@@ -1,0 +1,8 @@
+---
+- name: "Installing packages for realm joining"
+  apt:
+    name: [realmd, curl, krb5-user]
+    update_cache: yes
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

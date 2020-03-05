@@ -1,0 +1,21 @@
+---
+- name: "Installing sudo"
+  apt:
+    name: [ sudo ]
+    update_cache: yes
+
+- name: "Make all users sudo"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root 
+    group: root 
+    mode: 0644
+    force: no
+    validate: /usr/sbin/visudo -csf %s
+  with_items:
+    - etc/sudoers.d/all-users-sudo
+    - etc/sudoers.d/some-users-sudo-nopasswd
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

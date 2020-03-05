@@ -1,0 +1,14 @@
+---
+- name: "Installing common packages (can take very long to finish)"
+  apt:
+    name: [ inkscape, qiv, gimp, geany, atril, git, aisleriot, htop, strace,
+            tcpdump, nmap, curl, apt-file, locate, apt-src, aspell-de, aspell-en,
+            qbittorrent, filezilla, kazam, openshot, figlet, cowsay, unison,
+            owncloud-client, rdesktop, debsums, net-tools, pwgen, mplayer, tree,
+            lshw ]
+    update_cache: yes
+  notify:
+    - apt-file update
+    - updatedb
+
+# vim: tabstop=2 shiftwidth=2 expandtab

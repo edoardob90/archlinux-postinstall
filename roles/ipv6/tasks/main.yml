@@ -1,0 +1,10 @@
+---
+- name: "Make ipv4 prefered over ipv6"
+  copy:
+    src: etc/gai.conf
+    dest: /etc/gai.conf
+    owner: root
+    group: root
+    mode: 0644
+
+# vim: tabstop=2 shiftwidth=2 expandtab

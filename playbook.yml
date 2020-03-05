@@ -1,0 +1,36 @@
+---
+- name: "Archlinux"
+  hosts: localhost
+  connection: local
+  roles:
+    - { role: pkg, tags: [pacman] }
+    - { role: ntp, tags: [ntp] }
+    - { role: ansible, tags: [ansible] }
+    - { role: upgrade, tags: [upgrade] }
+    - { role: firmware, tags: [firmware] }
+    - { role: linux-headers, tags: [linux-headers] }
+    - { role: realmd, tags: [realmd] }
+    - { role: groups, tags: [groups] }
+    - { role: autofs, tags: [autofs] }
+    - { role: theme, tags: [theme] }
+    - { role: plymouth, tags: [plymouth] }
+    - { role: xfce, tags: [xfce] }
+    - { role: wallpapers, tags: [wallpapers] }
+    - { role: bash, tags: [bash] }
+    - { role: cacerts, tags: [cacerts] }
+    - { role: ipv6, tags: [ipv6] }
+    - { role: notify-send-all, tags: [notify-send-all] }
+    - { role: packages, tags: [packages] }
+    - { role: screensaver, tags: [screensaver] }
+    - { role: sudo, tags: [sudo] }
+    - { role: vim, tags: [vim] }
+    - { role: welcome, tags: [welcome] }
+    - { role: evolution, tags: [evolution] }
+    - { role: unattended-upgrades, tags: [unattended-upgrades] }
+    - { role: firefox, tags: [firefox] }
+    - { role: pidgin, tags: [pidgin] }
+    - { role: sshd, tags: [sshd] }
+    - { role: tools, tags: [tools] }
+    - { role: eduroam, tags: [eduroam] }
+    - { role: printing, tags: [printing] }
+    - { role: vpn, tags: [vpn] }

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+set -e
+
+base=$(dirname $0)
+
+apt-get -y install cups printer-driver-postscript-hp hplip
+systemctl enable cups
+
+
+# Log-in to cups on http://localhost:631 as lpadmin user was not possible.
+
+# A hint from the sssd log file explained why
+
+# (Thu Oct 17 17:47:21 2019) [sssd[be[empa.emp-eaw.ch]]] [ad_gpo_access_send] 
+# (0x0400): Configuration hint: PAM service 'cups' is not mapped to any Group 
+# Policy rule. If you plan to use this PAM service it is recommended to use the 
+# ad_gpo_map_* family of options to map this PAM service to a Group Policy rule. 
+# PAM services not present in any map will fall back to value set in 
+# ad_gpo_default_right, which is currently set to Denied (see manual pages 'man 
+# sssd-ad' for more details).
+
+# Therefore we add to sssd.conf:
+#     ad_gpo_map_permit = +cups
+
+# This is needed even when a local group is specified in the cups-file.conf:
+#     SystemGroup lpadmin
+# and the user was added manually to the group lpadmin
+
+# Also, the pam_group.so does not work here, so if the users was added to the
+# group lpadmin on the fly at login, using pam_group.so, it is not possible to
+# log in. See getgrnam method, it does not resolve. getgrnam is the method used
+# by cups to get the group membership:
+
+# #include <stdio.h>
+# #include <grp.h>
+#
+# int main(int  argc, char *argv[]) {
+#     int i;
+#     gid_t groupid;
+#     struct group *group;
+#
+#     group = getgrnam("lpadmin");
+#     groupid = group->gr_gid;
+#
+#     for (i = 0; group->gr_mem[i]; i ++) {
+#         printf("%s\n", group->gr_mem[i]);
+#     }
+# }
+
+
+# So the final solution is to add the following line to the domain section:
+#    ad_gpo_map_permit = +cups
+grep -q 'ad_gpo_map_permit' /etc/sssd/sssd.conf && FOUND="yes" || FOUND="no"; true
+if [ "$FOUND" == "no" ]; then
+	echo 'ad_gpo_map_permit = +cups' >> /etc/sssd/sssd.conf
+	systemctl restart sssd
+else
+	echo "Error, cannot handle ad_gp_map_permit updates in /etc/sssd/sssd.conf"
+	echo "(not implemented yet, exiting)"
+	echo "Assuming it is ok"
+	#exit 1
+fi
+
+
+# and use "domain users" as SystemGroup
+sed -i 's/SystemGroup lpadmin/SystemGroup "domain users"/' \
+    /etc/cups/cups-files.conf
+
+systemctl restart cups
+
+
+# Add all printers to cups
+# FIXME: how to get the full printer list?
+# FIXME: how to get the model of the printer?
+#lpadmin -p SH4-C -D "SH4-C" -L "SH4-C" -m "postscript-hp:0/ppd/hplip/HP/hp-officejet_pro_476_576_series-ps.ppd" -v "lpd://du-ps.empa.emp-eaw.ch/SH4-C" -E -o media=A4
+#lpadmin -d SH4-C
+

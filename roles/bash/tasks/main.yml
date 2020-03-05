@@ -1,0 +1,13 @@
+---
+- name: "Installing bash configuration"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - etc/skel/.bashrc
+    - root/.bashrc
+
+# vim: tabstop=2 shiftwidth=2 expandtab

@@ -1,0 +1,19 @@
+---
+- name: "Installing firefox"
+  apt:
+    name: [ firefox-esr ]
+    update_cache: yes
+
+- name: "Configure firefox"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root 
+    group: root 
+    mode: 0644
+  with_items:
+    - usr/lib/firefox-esr/defaults/pref/autoconfig.js
+    - usr/lib/firefox-esr/empa.cfg
+    - usr/share/firefox-esr/distribution/distribution.ini
+
+# vim: tabstop=2 shiftwidth=2 expandtab

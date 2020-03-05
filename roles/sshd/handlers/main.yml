@@ -1,0 +1,9 @@
+---
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

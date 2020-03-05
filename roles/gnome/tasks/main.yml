@@ -1,0 +1,22 @@
+---
+- name: "List installed tasks"
+  command: tasksel --list-tasks
+  register: tasksel_list_tasks
+  changed_when: false
+  check_mode: no
+
+- name: "Print result of tasksel list"
+  debug:
+    msg: "{{tasksel_list_tasks.stdout_lines}}"
+
+- name: "Install task gnome-desktop (when not installed) - takes some time"
+  command: tasksel install gnome-desktop
+  register: tasksel_install_gnome
+  when: "'i gnome-desktop' not in tasksel_list_tasks.stdout"
+
+- name: "Print result of tasksel install gnome"
+  debug:
+    msg: "{{tasksel_install_gnome.stdout_lines}}"
+  when: "'i gnome-desktop' not in tasksel_list_tasks.stdout"
+
+# vim: tabstop=2 shiftwidth=2 expandtab

@@ -1,0 +1,14 @@
+---
+- name: "Installing evolution mail client"
+  apt:
+    name: [ evolution ]
+    update_cache: yes
+
+- name: "Installing evolution-ews from backports"
+  apt:
+    name: [ evolution-ews ]
+    default_release: buster-backports
+    update_cache: yes
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

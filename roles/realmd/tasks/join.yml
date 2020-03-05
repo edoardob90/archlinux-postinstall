@@ -1,0 +1,88 @@
+---
+- name: "Get existing realms"
+  command: realm list --name-only 
+  register: realm_list_result
+  changed_when: false
+  check_mode: no
+
+- name: "Output joined realm (if joined)"
+  debug:
+    msg: "{{ realm_list_result.stdout }}"
+  when: "'empa.emp-eaw.ch' in realm_list_result.stdout"
+
+- name: "Installing temporary resolv.conf (if not joined)"
+  copy:
+    src: etc/resolv.conf
+    dest: /etc/resolv.conf
+    owner: root 
+    group: root 
+    mode: 0644
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+
+- name: "Discovering empa.emp-eaw.ch (if not joined)"
+  command: realm discover
+  register: realm_discover_result
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+  retries: 3
+  delay: 3
+  until: realm_discover_result.rc == 0
+
+- name: "Output discovered realm (if not joined)"
+  debug:
+    msg: "{{ realm_discover_result.stdout_lines }}"
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+
+- name: "Prepare password getter (if not joined)"
+  copy:
+    src: getpasswd
+    dest: /tmp/getpasswd
+    owner: root 
+    group: root 
+    mode: 0700
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+
+- name: "Get password (if not joined)"
+  command: /tmp/getpasswd
+  register: realm_passwd
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+
+- name: "Delete password (if not joined)"
+  file: 
+    state: absent
+    path: /tmp/password.encrypted
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+
+- name: "Delete key (if not joined)"
+  file: 
+    state: absent
+    path: /tmp/key.pem
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+
+- name: "Delete password getter (if not joined)"
+  file: 
+    state: absent
+    path: /tmp/getpasswd
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  changed_when: false
+
+- name: "Joining the EMPA domain (if not joined)"
+  command: realm join -v -U installlx --computer-ou=OU=Linux-Workstation,OU=Server-PCs EMPA.EMP-EAW.CH
+  args:
+    stdin: "{{ realm_passwd.stdout }}"
+  register: realm_join_result
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+  retries: 3
+  delay: 3
+  until: realm_join_result.rc == 0
+
+- name: "Output joining result (if not joined)"
+  debug:
+    msg: "{{ realm_join_result.stderr_lines }}"
+  when: "'empa.emp-eaw.ch' not in realm_list_result.stdout"
+
+# vim: tabstop=2 shiftwidth=2 expandtab

@@ -1,0 +1,21 @@
+---
+- name: Execute upgrade (can take very long, use pstree to monitor)
+  apt:
+    upgrade: dist
+    update-cache: yes
+  tags: upgrade
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+  tags: upgrade
+
+- name: Clean apt cache
+  command: apt-get clean warn=False
+  changed_when: false
+  become: true
+  tags: upgrade
+
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

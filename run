@@ -1,0 +1,72 @@
+#!/bin/bash
+
+export ANSIBLE_NOCOWS=1
+export ANSIBLE_FORCE_COLOR=true
+
+#- Prints the usage ------------------------------------------------------------
+function usage () {
+    echo ""
+    echo "Usage: run [OPTION]"
+    echo ""
+    echo "       -l             list available tags"
+    echo "       -t tag         only given tag"
+    echo "       -n tag         all but not given tag"
+    echo "       -d             dry run, does not make any modifications"
+    echo "       -s             silent, do not print ok and skipping info"
+    echo "       -h             prints this help message"
+    echo ""
+}
+
+while getopts "t:n:ldsh" o ; do
+    case $o in
+    t ) TAG=$OPTARG
+        ;;
+    n ) NOT_TAG=$OPTARG
+        ;;
+    l ) LISTTAGS=yes
+        ;;
+    d ) RUN=no
+        ;;
+    s ) SILENT=yes
+        ;;
+    h ) usage
+        exit 0
+        ;;
+    * ) usage
+        exit 1
+        ;;
+    esac
+done
+
+OPTARGS=""
+if [ "$RUN" == "no" ];then
+    OPTARGS="--check"
+fi
+
+if [ "$LISTTAGS" == "yes" ];then
+    OPTARGS="$OPTARGS --list-tags"
+fi
+
+if [ -n "$TAG" ];then
+    OPTARGS="$OPTARGS --tag $TAG"
+fi
+
+if [ -n "$NOT_TAG" ];then
+    OPTARGS="$OPTARGS --skip $NOT_TAG"
+fi
+
+
+
+
+if [ "$SILENT" == "yes" ];then
+    export ANSIBLE_STDOUT_CALLBACK=actionable
+    echo ANSIBLE_STDOUT_CALLBACK=$ANSIBLE_STDOUT_CALLBACK
+fi
+
+COMMAND="ansible-playbook --inventory hosts.ini --diff $OPTARGS playbook.yml"
+echo $COMMAND
+$COMMAND
+
+
+# vim: tabstop=4 shiftwidth=4 expandtab
+

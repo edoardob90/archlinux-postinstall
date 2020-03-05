@@ -1,0 +1,26 @@
+---
+- name: "Installing sssd.conf"
+  template:
+    src: etc/sssd/sssd.conf
+    dest: /etc/sssd/sssd.conf
+    owner: root 
+    group: root 
+    mode: 0600
+  vars:
+    fqdn: "{{ ansible_fqdn }}"
+  notify:
+  - restart sssd
+
+- name: "Installing pam mkhomedir configuration"
+  copy:
+    src: usr/share/pam-configs/mkhomedir
+    dest: /usr/share/pam-configs/mkhomedir
+    owner: root 
+    group: root 
+    mode: 0644
+  notify:
+  - pam auth update mkhomedir
+
+- meta: flush_handlers
+
+# vim: tabstop=2 shiftwidth=2 expandtab

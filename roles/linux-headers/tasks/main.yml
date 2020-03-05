@@ -1,0 +1,9 @@
+---
+- name: "Installing Linux headers"
+  apt:
+    name: [linux-headers-amd64]
+    update_cache: yes
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab
+

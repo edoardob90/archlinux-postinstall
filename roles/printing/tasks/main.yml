@@ -1,0 +1,28 @@
+---
+- name: "Installing printing packages"
+  apt:
+    name: [ cups, printer-driver-postscript-hp, hplip ]
+    update_cache: yes
+
+- name: "Enable cups"
+  service:
+    name: cups
+    state: started
+    enabled: yes
+
+- name: "Allow users to log in to cups"
+  replace:
+    path: /etc/cups/cups-files.conf
+    regexp: '^SystemGroup.*'
+    replace: 'SystemGroup "domain users"'
+  notify:
+    - restart cups
+
+#lpadmin -p SH4-C -D "SH4-C" -L "SH4-C" -m "postscript-hp:0/ppd/hplip/HP/hp-officejet_pro_476_576_series-ps.ppd" -v "lpd://du-ps.empa.emp-eaw.ch/SH4-C" -E -o media=A4
+#lpadmin -d SH4-C
+
+
+- meta: flush_handlers
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

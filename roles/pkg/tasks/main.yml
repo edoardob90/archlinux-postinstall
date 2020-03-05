@@ -1,0 +1,61 @@
+---
+- name: "Copy /etc/apt/sources.list"
+  copy:
+    src: etc/apt/sources.list
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - apt-get update
+
+- name: "Copy /etc/apt/sources.list.d/buster-backports.list"
+  copy:
+    src: etc/apt/sources.list.d/buster-backports.list
+    dest: /etc/apt/sources.list.d/buster-backports.list
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - apt-get update
+
+
+- name: "Check if apt-cacher host is reachable"
+  wait_for:
+    host: 192.168.15.20
+    port: 3142
+    timeout: 2
+  failed_when: false
+  check_mode: false
+  register: apt_cacher_host_accessible
+
+- name: "Print status of apt cacher host"
+  debug:
+    msg: "{{ apt_cacher_host_accessible }}"  
+
+
+- name: "Copy /etc/apt/apt.conf.installnet"
+  copy:
+    src: etc/apt/apt.conf.installnet
+    dest: /etc/apt/apt.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: apt_cacher_host_accessible.state is defined and apt_cacher_host_accessible.state == "started"
+  notify:
+  - apt-get update
+
+- name: "Copy /etc/apt/apt.conf"
+  copy:
+    src: etc/apt/apt.conf
+    dest: /etc/apt/apt.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: apt_cacher_host_accessible.state is not defined or apt_cacher_host_accessible.state != "started"
+  notify:
+  - apt-get update
+
+- meta: flush_handlers
+
+# vim: tabstop=2 shiftwidth=2 expandtab

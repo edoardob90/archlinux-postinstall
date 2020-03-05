@@ -1,0 +1,38 @@
+---
+- name: "Installing packages for plymouth"
+  apt:
+    name: [plymouth, plymouth-themes, plymouth-x11]
+    update_cache: yes
+
+- name: "Installing empa plymouth theme"
+  copy:
+    src: usr/share/plymouth/themes/empa
+    dest: /usr/share/plymouth/themes
+    owner: root 
+    group: root 
+    mode: 0755
+  notify:
+    - plymouth-set-default-theme
+    - update-grub
+
+- name: "Overwrite default plymouth Debian logo"
+  copy:
+    src: usr/share/plymouth/debian-logo.png
+    dest: /usr/share/plymouth/debian-logo.png
+    owner: root 
+    group: root 
+    mode: 0644
+  notify:
+    - plymouth-set-default-theme
+    - update-grub
+
+- name: "Enabling plymouth"
+  replace:
+    path: /etc/default/grub
+    regexp: 'GRUB_CMDLINE_LINUX_DEFAULT=".*"'
+    replace: 'GRUB_CMDLINE_LINUX_DEFAULT="splash quiet"'
+  notify:
+    - update-grub
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

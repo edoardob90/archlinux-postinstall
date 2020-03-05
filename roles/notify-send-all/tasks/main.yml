@@ -1,0 +1,18 @@
+---
+- name: "Make sure /usr/local/bin is there"
+  file:
+    path: /usr/local/bin
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: "Install notify-send-all"
+  copy:
+    src: usr/local/bin/notify-send-all
+    dest: /usr/local/bin/notify-send-all
+    owner: root
+    group: root
+    mode: 0755
+
+# vim: tabstop=2 shiftwidth=2 expandtab

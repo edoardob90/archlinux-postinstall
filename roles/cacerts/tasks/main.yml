@@ -1,0 +1,15 @@
+---
+- name: "Installing Empa ca certs"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - usr/local/share/ca-certificates/EERootCA01.crt
+    - usr/local/share/ca-certificates/EESystemCA01.crt
+  notify:
+    - update-ca-certificates
+
+# vim: tabstop=2 shiftwidth=2 expandtab

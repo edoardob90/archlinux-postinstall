@@ -1,0 +1,24 @@
+---
+- name: "Installing openssh-server"
+  apt:
+    name: [ openssh-server, openssh-client ]
+    update_cache: yes
+
+- name: "Add a system group for sshusers"
+  group:
+    name: sshusers
+    system: yes
+    state: present
+
+- name: "Configuring sshd"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root 
+    group: root 
+    mode: 0644
+  with_items:
+    - etc/ssh/sshd_config
+  notify: restart sshd
+
+# vim: tabstop=2 shiftwidth=2 expandtab

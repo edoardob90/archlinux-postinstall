@@ -1,0 +1,8 @@
+For Debian Testing run the following as root:
+Keep in mind that the owner of the key may distribute updates, packages and repositories that your system will trust (more information).
+
+echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/testpilot/Debian_Testing/ /' > /etc/apt/sources.list.d/isv:ownCloud:testpilot.list
+wget -nv https://download.opensuse.org/repositories/isv:ownCloud:testpilot/Debian_Testing/Release.key -O Release.key
+apt-key add - < Release.key
+apt-get update
+apt-get install testpilotcloud-client

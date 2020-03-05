@@ -1,0 +1,9 @@
+---
+- name: apt-file update
+  command: apt-file update
+
+- name: updatedb
+  command: updatedb
+
+
+# vim: tabstop=2 shiftwidth=2 expandtab

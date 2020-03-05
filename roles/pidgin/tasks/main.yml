@@ -1,0 +1,7 @@
+---
+- name: "Installing pidgin"
+  apt:
+    name: [ pidgin, pidgin-sipe ]
+    update_cache: yes
+
+# vim: tabstop=2 shiftwidth=2 expandtab

@@ -1,0 +1,17 @@
+---
+- name: "Crate directory /etc/skel/Desktop"
+  file:
+    path: /etc/skel/Desktop
+    state: directory
+
+- name: "Configuring sshd"
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root 
+    group: root 
+    mode: 0755
+  with_items:
+    - etc/skel/Desktop/eduroam-linux-Empa.py
+
+# vim: tabstop=2 shiftwidth=2 expandtab
