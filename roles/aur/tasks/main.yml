@@ -9,3 +9,17 @@
     repo: https://github.com/kewlfft/ansible-aur.git
     dest: /usr/share/ansible/plugins/modules/aur
     clone: yes
+
+- name: "Create aur_builder user"
+  user:
+    name: aur_builder
+    # created with python -c 'import crypt; print crypt.crypt("PASSWORD", "$1$MySalt$")'
+    password: $1$MySalt$Nm1nlwexDyoDA0skov69Y0
+
+- name: "Allow aur_builder to use sudo with Pacman"
+  lineinfile:
+    path: /etc/sudoers.d/11-install_aur_builder
+    line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    create: yes
+    validate: /usr/bin/visudo -cf %s
+
