@@ -15,6 +15,3 @@
     validate: /usr/bin/visudo -csf %s
   with_items:
     - etc/sudoers.d/wheel-users
-  notify:
-    - create aur_builder
-    - allow aur_builder to sudo
