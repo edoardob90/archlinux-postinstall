@@ -10,9 +10,9 @@ function usage () {
     echo ""
     echo "       -l             list available tags"
     echo "       -t tag         only given tag"
-    echo "       -n tag         all but not given tag"
-    echo "       -d             dry run, does not make any modifications"
-    echo "       -s             silent, do not print ok and skipping info"
+    echo "       -n tag         all but the given tag"
+    echo "       -d             dry run"
+    echo "       -s             silent, do not ask for confirmation and skip info"
     echo "       -h             prints this help message"
     echo ""
 }

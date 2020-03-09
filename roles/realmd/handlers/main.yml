@@ -2,6 +2,7 @@
 - name: restart sssd
   service:
     name: sssd
+    enabled: yes
     state: restarted
 
 - name: pam auth update mkhomedir

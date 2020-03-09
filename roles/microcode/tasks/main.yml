@@ -1,0 +1,12 @@
+tasks:
+  - name: "Installing Intel Microcode package"
+    pacman:
+      name: intel-ucode
+      update_cache: yes
+      state: latest
+    notify:
+    - update grub
+
+handlers:
+  - name: update grub
+    command: grub-mkconfig -o /boot/grub/grub.cfg

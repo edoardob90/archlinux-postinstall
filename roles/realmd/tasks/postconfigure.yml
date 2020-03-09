@@ -1,5 +1,12 @@
 ---
-- name: "Installing sssd.conf"
+- name: "Installing SSSD"
+  pacman:
+    name: sssd
+    update_cache: yes
+  notify:
+    - restart sssd
+
+- name: "Configuring SSSD"
   template:
     src: etc/sssd/sssd.conf
     dest: /etc/sssd/sssd.conf
