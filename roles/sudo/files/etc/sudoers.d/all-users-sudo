@@ -1,4 +1,5 @@
 # Allow all AD users to sudo to root
-%users  ALL=(ALL:ALL) ALL
-# Only owner can do sudo
-#pbu ALL=(ALL:ALL) ALL
+#%users  ALL=(ALL:ALL) ALL
+
+# Allow users in "wheel" to sudo
+%wheel  ALL=(ALL) ALL

@@ -1,8 +1,11 @@
 ---
-- name: "Installing packages for realm joining"
-  apt:
-    name: [realmd, curl, krb5-user]
+- name: "Installing Kerberos and dependecies"
+  pacman:
+    name: [ krb, pam-krb5 ]
     update_cache: yes
 
-
-# vim: tabstop=2 shiftwidth=2 expandtab
+# See: https://gist.github.com/cahna/45bb9eee92c5f1fce66f
+# It needs the aur/pkg.yml file in the proper subdir
+# The variable 'makepkg_nonroot_user' must be set in playbook.yml because building a package as root will raise an error!
+- name: "Installing 'realmd' from AUR"
+  include: aur/pkg.yml pkg_name=realmd

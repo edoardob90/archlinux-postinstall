@@ -1,7 +1,7 @@
 ---
 - name: "Installing ntp"
-  apt:
-    name: [ ntp, ntpdate ]
+  pacman:
+    name: ntp
     update_cache: yes
 
 - name: "Installing ntp config"
@@ -13,6 +13,5 @@
     mode: 0644
   with_items:
     - etc/ntp.conf
-
-
-# vim: tabstop=2 shiftwidth=2 expandtab
+  notify:
+    - restart ntpd

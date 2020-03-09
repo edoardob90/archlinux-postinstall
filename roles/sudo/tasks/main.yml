@@ -1,6 +1,6 @@
 ---
 - name: "Installing sudo"
-  apt:
+  pacman:
     name: [ sudo ]
     update_cache: yes
 
@@ -15,7 +15,5 @@
     validate: /usr/sbin/visudo -csf %s
   with_items:
     - etc/sudoers.d/all-users-sudo
-    - etc/sudoers.d/some-users-sudo-nopasswd
-
 
 # vim: tabstop=2 shiftwidth=2 expandtab
