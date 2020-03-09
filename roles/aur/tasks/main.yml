@@ -4,6 +4,7 @@
     name: base-devel
     update_cache: yes
 
+- name: "Get 'ansible-aur' plugin"
   git:
     repo: https://github.com/kewlfft/ansible-aur.git
     dest: /usr/share/ansible/plugins/modules/aur
