@@ -1,11 +1,27 @@
 ---
-- name: "Installing Kerberos and dependecies"
+- name: "Installing Kerberos and dependencies"
   pacman:
     name: [ krb5, pam-krb5 ]
     update_cache: yes
 
+- name: "Installing Yay (AUR package manager): dependencies"
+  pacman:
+    name: [ git, sudo, go]
+    update_cache: yes
+
 # This requires the plugin 'ansible-aur'. See README.md
+- name: "Installing Yay (AUR package manager)"
+  aur:
+    name: yay
+    use: makepkg
+    skip_installed: true
+  become: yes
+  become_user: aur_builder
+
 - name: "Installing 'realmd' from AUR"
-  aur: name=realmd use=makepkg skip_installed=true
+  aur:
+    name: realmd
+    use: yay
+    skip_installed: true
   become: yes
   become_user: aur_builder # required because AUR helpers forbid executing makepkg and related operations as root
