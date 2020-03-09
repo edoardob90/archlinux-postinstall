@@ -2,19 +2,16 @@
 - name: "Archlinux"
   hosts: localhost
   connection: local
-  vars:
-    # needed to compile & install packages from AUR
-    makepkg_nonroot_user: "{{ ansible_user }}"
   roles:
     # FIXME: need to update the mirror list, if need be
     #- { role: pkg, tags: [pacman] }
     - { role: microcode, tags: [microcode] }
-    - { role: autofs, tags: [autofs] }
     - { role: ntp, tags: [ntp] }
-    - { role: realmd, tags: [realmd] }
+    - { role: sudo, tags: [sudo] }
     - { role: groups, tags: [groups] }
     - { role: cacerts, tags: [cacerts] }
-    - { role: ipv6, tags: [ipv6] }
-    - { role: sudo, tags: [sudo] }
     - { role: sshd, tags: [sshd] }
+    - { role: autofs, tags: [autofs] }
+    - { role: realmd, tags: [realmd] } # this requires the plugin 'ansible-aur' to be installed
+    - { role: ipv6, tags: [ipv6] }
     - { role: gnome, tags: [gnome] }
