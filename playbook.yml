@@ -8,6 +8,7 @@
     - { role: microcode, tags: [microcode] }
     - { role: ntp, tags: [ntp] }
     - { role: sudo, tags: [sudo] }
+    - { role: aur, tags: [aur] }
     - { role: groups, tags: [groups] }
     - { role: cacerts, tags: [cacerts] }
     - { role: sshd, tags: [sshd] }

@@ -1,7 +1,7 @@
 ---
 - name: "Installing Kerberos and dependecies"
   pacman:
-    name: [ krb, pam-krb5 ]
+    name: [ krb5, pam-krb5 ]
     update_cache: yes
 
 # This requires the plugin 'ansible-aur'. See README.md

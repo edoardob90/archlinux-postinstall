@@ -1,0 +1,10 @@
+---
+- name: "Setup for building from AUR"
+  pacman:
+    name: base-devel
+    update_cache: yes
+
+  git:
+    repo: https://github.com/kewlfft/ansible-aur.git
+    dest: /usr/share/ansible/plugins/modules/aur
+    clone: yes
