@@ -1,6 +1,8 @@
 # Requirements
 
-Ansible must be installed: `pacman -S ansible git`
+- Ansible must be installed: `pacman -S ansible git`
+
+- Ansible doesn't support installing from AUR. Therefore, the nice [`ansible-aur`](https://github.com/kewlfft/ansible-aur) plugin must be installed: `git clone https://github.com/kewlfft/ansible-aur.git ~/.ansible/plugins/modules/aur`
 
 ## Tasks
 

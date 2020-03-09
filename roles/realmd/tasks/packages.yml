@@ -4,8 +4,8 @@
     name: [ krb, pam-krb5 ]
     update_cache: yes
 
-# See: https://gist.github.com/cahna/45bb9eee92c5f1fce66f
-# It needs the aur/pkg.yml file in the proper subdir
-# The variable 'makepkg_nonroot_user' must be set in playbook.yml because building a package as root will raise an error!
+# This requires the plugin 'ansible-aur'. See README.md
 - name: "Installing 'realmd' from AUR"
-  include: aur/pkg.yml pkg_name=realmd
+  aur: name=realmd use=makepkg skip_installed=true
+  become: yes
+  become_user: aur_builder # required because AUR helpers forbid executing makepkg and related operations as root
