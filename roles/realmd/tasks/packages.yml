@@ -4,24 +4,10 @@
     name: [ krb5, pam-krb5 ]
     update_cache: yes
 
-- name: "Installing Yay (AUR package manager): dependencies"
-  pacman:
-    name: [ git, sudo, go]
-    update_cache: yes
-
-# This requires the plugin 'ansible-aur'. See README.md
-- name: "Installing Yay (AUR package manager)"
-  aur:
-    name: yay
-    use: makepkg
-    skip_installed: true
-  become: yes
-  become_user: aur_builder
-
+# Install realmd with Yay but via a shell to bypass user pacman's prompt
+# Output to /tmp/yay.log for debugging purposes. It WILL NOT run if the file exist!
+# FIXME: maybe there's a better way to do this?
 - name: "Installing 'realmd' from AUR"
-  aur:
-    name: realmd
-    use: yay
-    skip_installed: true
-  become: yes
-  become_user: aur_builder # required because AUR helpers forbid executing makepkg and related operations as root
+  shell: echo "1" | yay -S realmd 2>&1 > /tmp/yay.log
+  args:
+    creates: /tmp/yay.log
