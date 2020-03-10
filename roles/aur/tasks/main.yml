@@ -23,3 +23,19 @@
     create: yes
     validate: /usr/bin/visudo -cf %s
 
+# Installing Yay: AUR package manager
+# Required dependencies
+- name: "Installing Yay (AUR package manager): dependencies"
+  pacman:
+    name: [ git, sudo, go]
+    update_cache: yes
+
+# This requires the plugin 'ansible-aur'. See README.md
+- name: "Installing Yay (AUR package manager)"
+  aur:
+    name: yay
+    use: makepkg
+    skip_installed: true
+  become: yes
+  become_user: aur_builder
+
