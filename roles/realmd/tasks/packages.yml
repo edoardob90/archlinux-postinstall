@@ -1,18 +1,18 @@
 ---
 - name: "Installing Kerberos and dependencies"
   pacman:
-    name: [ krb5, pam-krb5, openldap, packagekit, polkit ]
+    name: [ krb5, pam-krb5, openldap, packagekit, polkit, docbook-xml, docbook-xsl, intltool, libxslt, perl-xml-parser, xmlto ]
     update_cache: yes
 
 # Install realmd with Yay but via a shell to bypass user pacman's prompt
 # Output to /tmp/yay.log for debugging purposes. It WILL NOT run if the file exist!
 # FIXME: maybe there's a better way to do this?
 - name: "Installing 'realmd' dependencies"
-  shell: echo 1 | yay -S adcli 2>&1 >> /tmp/yay.log
+  shell: echo 1 | yay --answerclean All --answerdiff None --answeredit None --answerupgrade None -S adcli
   become: yes
   become_user: aur_builder
 
 - name: "Installing 'realmd' from AUR"
-  shell: echo 1 | yay -S realmd 2>&1 >> /tmp/yay.log
+  shell: echo 1 | yay --answerclean All --answerdiff None --answeredit None --answerupgrade None -S realmd
   become: yes
   become_user: aur_builder
