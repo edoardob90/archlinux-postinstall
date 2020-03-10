@@ -9,6 +9,10 @@
 # FIXME: maybe there's a better way to do this?
 - name: "Installing 'realmd' dependencies"
   shell: echo 1 | yay -S adcli 2>&1 >> /tmp/yay.log
+  become: yes
+  become_user: aur_builder
 
 - name: "Installing 'realmd' from AUR"
   shell: echo 1 | yay -S realmd 2>&1 >> /tmp/yay.log
+  become: yes
+  become_user: aur_builder
